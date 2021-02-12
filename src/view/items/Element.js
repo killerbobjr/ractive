@@ -380,6 +380,19 @@ export default class Element extends ContainerItem {
     this.rendered = true;
   }
 
+	setAttribute(name, value)
+	{
+		if(this.statics && name in this.statics)
+		{
+			this.statics[name] = value;
+		}
+		const attribute = this.attributeByName[name];
+		if(attribute)
+		{
+			attribute.value = value;
+		}
+	}
+
   shuffled() {
     super.shuffled();
     this.decorators.forEach(shuffled);

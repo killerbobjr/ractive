@@ -67,14 +67,10 @@ export default class CheckboxNameBinding extends Binding {
   }
 
   handleChange() {
-    this.isChecked = this.element.node.checked;
-    this.group.value = this.model.get().slice();
-    const value = this.element.getAttribute('value');
-    if (this.isChecked && !this.arrayContains(this.group.value, value)) {
-      this.group.value.push(value);
-    } else if (!this.isChecked && this.arrayContains(this.group.value, value)) {
-      this.removeFromArray(this.group.value, value);
-    }
+    const node = this.node;
+    node.value = node.checked = this.element.node.checked;
+	this.element.setAttribute('value', node.checked);
+	
     // make sure super knows there's a change
     this.lastValue = null;
     super.handleChange();
@@ -84,17 +80,8 @@ export default class CheckboxNameBinding extends Binding {
     super.render();
 
     const node = this.node;
-
-    const existingValue = this.model.get();
-    const bindingValue = this.element.getAttribute('value');
-
-    if (isArray(existingValue)) {
-      this.isChecked = this.arrayContains(existingValue, bindingValue);
-    } else {
-      this.isChecked = this.element.compare(existingValue, bindingValue);
-    }
-    node.name = '{{' + this.model.getKeypath() + '}}';
-    node.checked = this.isChecked;
+    node.name = this.model.get();
+    node.value = node.checked = this.element.getAttribute('value') === 'true';
 
     this.element.on('change', handleDomEvent);
 
